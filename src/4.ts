@@ -1,22 +1,12 @@
-class Key {}
+class Key {
+  private signature: number;
 
-class MyHouse {
-  private key: Key;
-
-  constructor(key: Key) {
-    this.key = key;
+  constructor() {
+    this.signature = Math.random();
   }
 
-  openDoor(enteredKey: Key) {
-    if (enteredKey === this.key) {
-      console.log("Двері відкрито");
-    } else {
-      console.log("Вийди звідси розбійник!");
-    }
-  }
-
-  comeIn(person: Person) {
-    console.log("Заходьте дівчата, то є моя хата...");
+  getSignature(): number {
+    return this.signature;
   }
 }
 
@@ -27,10 +17,43 @@ class Person {
     this.key = key;
   }
 
-  getKey() {
+  getKey(): Key {
     return this.key;
   }
 }
+
+abstract class House {
+  protected door: boolean;
+  protected key: Key;
+  protected tenants: Person[] = [];
+
+  constructor(key: Key) {
+    this.key = key;
+    this.door = false;
+  }
+
+  abstract openDoor(key: Key): void;
+
+  comeIn(person: Person): void {
+    if (this.door) {
+      this.tenants.push(person);
+      console.log("Людина увыйшла в дім ");
+    } else {
+      console.log("Двері зачинено");
+    }
+  }
+}
+class MyHouse extends House {
+  openDoor(key: Key): void {
+    if (key.getSignature() === this.key.getSignature()) {
+      this.door = true;
+      console.log("Двері відчиненно");
+    } else {
+      console.log("Невірний ключ. Двері зачинено");
+    }
+  }
+}
+
 const key = new Key();
 
 const house = new MyHouse(key);
